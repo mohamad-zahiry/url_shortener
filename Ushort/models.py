@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.http import HttpRequest
+import ipware
+import requests
+import json
 
 
 class Creator(models.Model):
@@ -33,3 +39,219 @@ class Creator(models.Model):
         if last_day_urls_count < self.max_url_a_day:
             return True
         return False
+
+
+class Url(models.Model):
+    url = models.CharField(max_length=10, unique=True)
+    target = models.URLField()
+    creator = models.ForeignKey(to=Creator, to_field="email", on_delete=models.DO_NOTHING)
+
+    visitors = models.IntegerField(default=0)
+    visitors_after_expire = models.IntegerField(default=0)
+
+    access_start = models.DateTimeField(auto_now_add=True)
+    access_duration = models.DurationField(default=timezone.timedelta(days=10), help_text="Duration of access to the URL")
+    access_code = models.CharField(max_length=64, default="", blank=True, null=True, help_text="Restricts access to this URL with the access code")
+
+    advaned = models.BooleanField(default=False, help_text="If checked, time, date, country and number of visitors will be collected for the URL until it expires")
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["creator", "-created"]
+        get_latest_by = ["created"]
+
+    def __str__(self):
+        return f"/{self.url}"
+
+    def clean(self):
+        url = Url.objects.filter(id=self.id)
+        if not url.exists():
+            if not self.creator.can_generate_url:
+                raise ValidationError(_("you only can create 100 URLs"), code="max_url_creation")
+
+            if not self.creator.can_generate_url_tody:
+                raise ValidationError(_("you can create 5 URLs a day"), code="max_url_creation_a_day")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    @property
+    def expire_time(self):
+        return self.access_start + self.access_duration
+
+    @property
+    def is_started(self):
+        if self.access_start <= timezone.now():
+            return True
+        return False
+
+    @property
+    def is_expired(self):
+        if self.expire_time <= timezone.now():
+            return True
+        return False
+
+    @property
+    def expired_after(self):
+        if self.is_expired:
+            return timezone.timedelta()
+        elif self.is_started:
+            return self.expire_time - timezone.now()
+        return self.access_duration  # if isn't started, returns the "Url.access_duration"
+
+    @property
+    def is_public(self):
+        if self.access_code:
+            return False
+        return True
+
+    def check_access_code(self, access_code):
+        if self.access_code == str(access_code):
+            return True
+        return False
+
+    def add_visitor(self, request: HttpRequest):
+        if self.is_expired:
+            self.visitors_after_expire += 1
+        else:
+
+            if self.advaned:  # Visitor Model only used for advanced Urls
+                ip, _ = ipware.get_client_ip(request)
+                country = Country.country_by_ip(ip)
+                Visitor.increase_or_create(url=self, country=country)
+
+            self.visitors += 1
+
+        self.save()
+
+
+class Country(models.Model):
+    # ? "-" used for the unknown IPs. The "name" field can't be empty because
+    # ? of "Visitor" model, which use "Country.name" as "ForeignKey"
+    name = models.CharField(max_length=50, unique=True, default="-")
+    code = models.CharField(max_length=3, unique=True, default="-")
+
+    class Meta:
+        verbose_name_plural = "Countries"
+
+    def __str__(self):
+        return "No Country" if self.name == "-" else self.name
+
+    def visitor_count(self):
+        return Visitor.all_from_country(country=self)
+
+    @staticmethod
+    def __ip_to_country__ip_api(ip: str):
+        name = code = "-"
+
+        try:
+            answer = requests.get(f"http://ip-api.com/json/{ip}?fields=status,country,countryCode,query").text
+        except Exception:
+            return (name, code)
+
+        answer = json.loads(answer)
+        if answer.get("status") == "success":
+            name = answer.get("country")
+            code = answer.get("countryCode")
+
+        return (name, code)
+
+    @classmethod
+    def country_by_ip(cls, ip: str):
+        name, code = cls.__ip_to_country__ip_api(ip)
+        obj, _ = Country.objects.get_or_create(name=name, code=code)
+        return obj
+
+    @staticmethod
+    def countries_for_url(url: Url):
+        return {v.country for v in Visitor.objects.filter(url=url).only("country")}
+
+
+class Visitor(models.Model):
+    TIME_FRAMES = [
+        (0, "00:00 - 01:59"),
+        (2, "02:00 - 03:59"),
+        (4, "04:00 - 05:59"),
+        (6, "06:00 - 07:59"),
+        (8, "08:00 - 09:59"),
+        (10, "10:00 - 11:59"),
+        (12, "12:00 - 13:59"),
+        (14, "14:00 - 15:59"),
+        (16, "16:00 - 17:59"),
+        (18, "18:00 - 19:59"),
+        (20, "20:00 - 21:59"),
+        (22, "22:00 - 23:59"),
+    ]
+
+    url = models.ForeignKey(to=Url, on_delete=models.SET_NULL, null=True)
+    country = models.ForeignKey(to=Country, on_delete=models.DO_NOTHING, to_field="name", default="-")
+
+    date = models.DateField(auto_now_add=True)
+    hour = models.IntegerField(choices=TIME_FRAMES, help_text="Stores the visit time in 2-hour timeframes")
+
+    count = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ["-date", "url", "-count"]
+        get_latest_by = "date"
+
+    def __str__(self):  # e.g: "/url (47) 'Italy'"
+        return f"[{self.date}] {self.url} ({self.count}) '{self.country}'"
+
+    def clean(self):
+        self.hour = Visitor.__time_to_timeframe_key()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def for_url_from_country(url: Url, country: Country):
+        """Gives the number of visitors for a specific Url and Country"""
+        counts = [v.count for v in Visitor.objects.filter(url=url, country=country).only("count")]
+        return sum(counts)
+
+    @staticmethod
+    def for_url_countriely(url: Url):
+        """Gives the categorized number of visitors to a specific URL of the available Country(s)"""
+        data = {}
+        countries = Country.countries_for_url(url=url)
+        for country in countries:
+            data[f"{country}"] = Visitor.for_url_from_country(url=url, country=country)
+        return data
+
+    @staticmethod
+    def for_url_from_country_hourly(url: Url, country: Country):
+        """Gives a categorized number of visitors, grouped by hour, for a specific URL and Country"""
+        data = {}
+        for k, tf in Visitor.TIME_FRAMES:
+            qs = Visitor.objects.filter(url=url, country=country, hour=k).only("count")
+            data[f"{tf}"] = sum([v.count for v in qs])
+        return data
+
+    @staticmethod
+    def for_url_countriely_hourly(url: Url):
+        """Gives a categorized number of visitors grouped by hour for a specific URL from all available Country(s)"""
+        data = {}
+        countries = Country.countries_for_url(url=url)
+        for country in countries:
+            data[f"{country}"] = Visitor.for_url_from_country_hourly(url=url, country=country)
+        return data
+
+    @staticmethod
+    def increase_or_create(url: Url = None, country: Country = None):
+        obj, _ = Visitor.objects.get_or_create(
+            url=url,
+            country=country,
+            date=timezone.now(),
+            hour=Visitor.__time_to_timeframe_key(),
+        )
+        obj.count += 1
+        obj.save()
+
+    @staticmethod
+    def __time_to_timeframe_key():
+        """Converts the current time to the "TIME FRAMES" key"""
+        return timezone.now().hour // 2 * 2
