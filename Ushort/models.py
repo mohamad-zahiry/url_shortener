@@ -12,11 +12,34 @@ import json
 class Creator(models.Model):
     """This model represents the User-model with some additional functions and uses email as the username"""
 
+    class Account:
+        class Types(models.TextChoices):
+            FREE = "F", _("Free")
+            ADVANCED = "A", _("Advanced")
+            COMPLETE = "C", _("Complete")
+
+        class Free:
+            max_url = 25
+            max_url_a_day = 5
+            max_monitored_url = 0
+
+        class Advanced:
+            max_url = 400
+            max_url_a_day = 20
+            max_monitored_url = 200
+
+        class Complete:
+            max_url = 1000
+            max_url_a_day = 100
+            max_monitored_url = 1000
+
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
 
-    max_url_a_day = models.IntegerField(default=5, help_text="Maximum number of URLs a creator can generate per day")
+    account_type = models.TextField(choices=Account.Types.choices, max_length=1, default=Account.Types.FREE)
     max_url = models.IntegerField(default=25, help_text="Maximum number of URLs a creator can generate")
+    max_url_a_day = models.IntegerField(default=5, help_text="Maximum number of URLs a creator can generate per day")
+    max_monitored_url = models.IntegerField(default=0, help_text="Maximum number of Monitored-URLs a creator can generate")
 
     def __str__(self):
         return self.user.username
@@ -27,7 +50,7 @@ class Creator(models.Model):
 
     @property
     def can_generate_url(self):
-        if self.url_set.all().count() <= self.max_url:
+        if self.url_set.all().count() < self.max_url:
             return True
         return False
 
@@ -39,6 +62,38 @@ class Creator(models.Model):
         if last_day_urls_count < self.max_url_a_day:
             return True
         return False
+
+    @property
+    def can_generate_monitored_url(self):
+        monitored_urls_number = self.url_set.filter(creator=self, monitored=True).count()
+        if monitored_urls_number < self.max_monitored_url:
+            return True
+        return False
+
+    @property
+    def type(self):
+        return self.get_account_type_display()
+
+    def set_to_Free_Account(self):
+        self.account_type = Creator.Account.Types.FREE
+        self.max_url = Creator.Account.Free.max_url
+        self.max_url_a_day = Creator.Account.Free.max_url_a_day
+        self.max_monitored_url = Creator.Account.Free.max_monitored_url
+        self.save()
+
+    def set_to_Advanced_Account(self):
+        self.account_type = Creator.Account.Types.ADVANCED
+        self.max_url = Creator.Account.Advanced.max_url
+        self.max_url_a_day = Creator.Account.Advanced.max_url_a_day
+        self.max_monitored_url = Creator.Account.Advanced.max_monitored_url
+        self.save()
+
+    def set_to_Complete_Account(self):
+        self.account_type = Creator.Account.Types.COMPLETE
+        self.max_url = Creator.Account.Complete.max_url
+        self.max_url_a_day = Creator.Account.Complete.max_url_a_day
+        self.max_monitored_url = Creator.Account.Complete.max_monitored_url
+        self.save()
 
 
 class Url(models.Model):
@@ -53,7 +108,7 @@ class Url(models.Model):
     access_duration = models.DurationField(default=timezone.timedelta(days=10), help_text="Duration of access to the URL")
     access_code = models.CharField(max_length=64, default="", blank=True, null=True, help_text="Restricts access to this URL with the access code")
 
-    advaned = models.BooleanField(default=False, help_text="If checked, time, date, country and number of visitors will be collected for the URL until it expires")
+    monitored = models.BooleanField(default=False, help_text="If checked, time, date, country and number of visitors will be collected for the URL until it expires")
 
     created = models.DateTimeField(auto_now_add=True)
 
@@ -68,10 +123,14 @@ class Url(models.Model):
         url = Url.objects.filter(id=self.id)
         if not url.exists():
             if not self.creator.can_generate_url:
-                raise ValidationError(_("you only can create 100 URLs"), code="max_url_creation")
+                raise ValidationError(_(f"you only can create {self.creator.max_url} URLs"), code="max_url_creation")
 
             if not self.creator.can_generate_url_tody:
-                raise ValidationError(_("you can create 5 URLs a day"), code="max_url_creation_a_day")
+                raise ValidationError(_(f"you can create {self.creator.max_url_a_day} URLs a day"), code="max_url_creation_a_day")
+
+            if self.monitored:
+                if not self.creator.can_generate_monitored_url:
+                    raise ValidationError(_(f"you can create {self.creator.max_monitored_url} monitored URLs"), code="max_monitored_url_creation")
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -117,7 +176,7 @@ class Url(models.Model):
             self.visitors_after_expire += 1
         else:
 
-            if self.advaned:  # Visitor Model only used for advanced Urls
+            if self.monitored:  # Visitor Model only used for "monitored" URLs
                 ip, _ = ipware.get_client_ip(request)
                 country = Country.country_by_ip(ip)
                 Visitor.increase_or_create(url=self, country=country)
@@ -131,7 +190,7 @@ class Country(models.Model):
     # ? "-" used for the unknown IPs. The "name" field can't be empty because
     # ? of "Visitor" model, which use "Country.name" as "ForeignKey"
     name = models.CharField(max_length=50, unique=True, default="-")
-    code = models.CharField(max_length=3, unique=True, default="-")
+    code = models.CharField(max_length=2, unique=True, default="-", help_text="ISO 3166-1 alpha-2 codes are two-letter country codes")
 
     class Meta:
         verbose_name_plural = "Countries"
@@ -147,12 +206,12 @@ class Country(models.Model):
         name = code = "-"
 
         try:
-            answer = requests.get(f"http://ip-api.com/json/{ip}?fields=status,country,countryCode,query").text
+            answer = requests.get(f"http://ip-api.com/json/{ip}?fields=country,countryCode").text
         except Exception:
             return (name, code)
 
         answer = json.loads(answer)
-        if answer.get("status") == "success":
+        if answer:
             name = answer.get("country")
             code = answer.get("countryCode")
 
