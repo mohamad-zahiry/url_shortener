@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
 from django.utils import timezone as tz
 from django.core.exceptions import ValidationError
-from url_shortener.models import Creator, Url, Country, Visitor
+from Ushort.models import Creator, Url, Country, Visitor
 
 
 class Init(TestCase):
