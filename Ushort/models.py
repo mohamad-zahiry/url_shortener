@@ -57,9 +57,9 @@ class Creator(models.Model):
     @property
     def can_generate_url_tody(self):
         last_day = timezone.now() + timezone.timedelta(days=-1)
-        last_day_urls_count = self.url_set.filter(created__gte=last_day).count()
+        last_day_urls_number = self.url_set.filter(created__gte=last_day).count()
 
-        if last_day_urls_count < self.max_url_a_day:
+        if last_day_urls_number < self.max_url_a_day:
             return True
         return False
 
@@ -250,14 +250,14 @@ class Visitor(models.Model):
     date = models.DateField(auto_now_add=True)
     hour = models.IntegerField(choices=TIME_FRAMES, help_text="Stores the visit time in 2-hour timeframes")
 
-    count = models.IntegerField(default=0)
+    number = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ["-date", "url", "-count"]
+        ordering = ["-date", "url", "-number"]
         get_latest_by = "date"
 
     def __str__(self):  # e.g: "/url (47) 'Italy'"
-        return f"[{self.date}] {self.url} ({self.count}) '{self.country}'"
+        return f"[{self.date}] {self.url} ({self.number}) '{self.country}'"
 
     def clean(self):
         self.hour = Visitor.__time_to_timeframe_key()
@@ -269,8 +269,8 @@ class Visitor(models.Model):
     @staticmethod
     def for_url_from_country(url: Url, country: Country):
         """Gives the number of visitors for a specific Url and Country"""
-        counts = [v.count for v in Visitor.objects.filter(url=url, country=country).only("count")]
-        return sum(counts)
+        numbers = [v.number for v in Visitor.objects.filter(url=url, country=country).only("number")]
+        return sum(numbers)
 
     @staticmethod
     def for_url_countriely(url: Url):
@@ -286,7 +286,7 @@ class Visitor(models.Model):
         """Gives a categorized number of visitors, grouped by hour, for a specific URL and Country"""
         data = {}
         for k, tf in Visitor.TIME_FRAMES:
-            qs = Visitor.objects.filter(url=url, country=country, hour=k).only("count")
+            qs = Visitor.objects.filter(url=url, country=country, hour=k).only("number")
             data[f"{tf}"] = sum([v.count for v in qs])
         return data
 
@@ -307,7 +307,7 @@ class Visitor(models.Model):
             date=timezone.now(),
             hour=Visitor.__time_to_timeframe_key(),
         )
-        obj.count += 1
+        obj.number += 1
         obj.save()
 
     @staticmethod
