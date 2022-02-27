@@ -1,7 +1,7 @@
 from django.urls import path
 from Ushort import views
 
-appname = "Ushort"
+app_name = "Ushort"
 
 urlpatterns = [
     path("", views.home, name="home")
