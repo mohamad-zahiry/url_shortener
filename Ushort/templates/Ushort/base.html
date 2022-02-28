@@ -17,10 +17,14 @@
 	<meta property="og:description" content="" /> <!-- description shown in the actual shared post -->
 	<meta property="og:image" content="" /> <!-- image link, make sure it's jpg -->
 	<meta property="og:url" content="" /> <!-- where do you want your post to link to -->
-	<meta property="og:type" content="article" />
+	<meta property="og:type" content="articvle" />
 
     <!-- Website Title -->
-    <title>URL Shortener - make your life easier</title>
+    <title>
+        {% block pageTitle %}
+            Ushort - make your life easier
+        {% endblock pageTitle %}
+    </title>
     
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap&subset=latin-ext" rel="stylesheet">
@@ -51,11 +55,8 @@
         <div class="container">
 
             <!-- Text Logo - Use this if you don't have a graphic logo -->
-            <a class="navbar-brand logo-text page-scroll" href="index.html">Ushort</a>
+            <a class="navbar-brand logo-text page-scroll" href="{% url 'Ushort:home' %}">Ushort</a>
 
-            <!-- Image Logo -->
-            <!-- <a class="navbar-brand logo-image" href="index.html"><img src="images/logo.svg" alt="alternative"></a>  -->
-            
             <!-- Mobile Menu Toggle Button -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-awesome fas fa-bars"></span>
@@ -66,7 +67,7 @@
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link page-scroll" href="#header">HOME<span class="sr-only">(current)</span></a>
+                        <a class="nav-link page-scroll" href="{% url 'Ushort:home' %}">HOME<span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link page-scroll" href="#features">FEATURES</a>
