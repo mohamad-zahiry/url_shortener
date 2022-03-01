@@ -12,8 +12,9 @@
                         <div class="text-container">
                             <h1>&ldquo;Ushort&rdquo; Easier Customers Management</h1>
                             <p class="p-large">Use <b>Ushort</b> to shortening your business products links and make easier accessablity for your customer and management for your team</p>
-                            <!-- ! sign in -->
-                            <a class="btn-solid-lg page-scroll" href="{% url 'Ushort:signup' %}">SIGN UP</a>
+                            {% if not request.user.is_authenticated %}
+                                <a class="btn-solid-lg page-scroll" href="{% url 'Ushort:signup' %}">SIGN UP</a>
+                            {% endif %}
                         </div> <!-- end of text-container -->
                     </div> <!-- end of col -->
                     <div class="col-lg-6 col-xl-7">
@@ -284,7 +285,9 @@
                                 <div class="media-body">Targeted client base with Ushort's efficient monitoring technology</div>
                             </li>
                         </ul>
-                        <a class="btn-solid-reg page-scroll" href="{% url 'Ushort:signup' %}">SIGN UP</a>
+                        {% if not request.user.is_authenticated %}
+                            <a class="btn-solid-reg page-scroll" href="{% url 'Ushort:signup' %}">SIGN UP</a>
+                        {% endif %}
                     </div> <!-- end of text-container -->
                 </div> <!-- end of col -->
                 <div class="col-lg-6">
