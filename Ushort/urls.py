@@ -4,5 +4,6 @@ from Ushort import views
 app_name = "Ushort"
 
 urlpatterns = [
-    path("", views.home, name="home")
+    path("", views.home, name="home"),
+    path("signup", views.signup, name="signup"),
 ]
