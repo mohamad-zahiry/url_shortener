@@ -147,32 +147,9 @@
             // handle the invalid form...
             lformError();
             lsubmitMSG(false, "Please fill all fields!");
-        } else {
-            // everything looks good!
-            event.preventDefault();
-            lsubmitForm();
-        }
+        } 
     });
 
-    function lsubmitForm() {
-        // initiate variables with form content
-		var email = $("#lemail").val();
-		var password = $("#lpassword").val();
-        
-        $.ajax({
-            type: "POST",
-            url: "php/loginform-process.php",
-            data: "email=" + email + "&password=" + password, 
-            success: function(text) {
-                if (text == "success") {
-                    lformSuccess();
-                } else {
-                    lformError();
-                    lsubmitMSG(false, text);
-                }
-            }
-        });
-	}
 
     function lformSuccess() {
         $("#logInForm")[0].reset();
