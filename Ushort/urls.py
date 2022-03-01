@@ -5,5 +5,6 @@ app_name = "Ushort"
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path("signup", views.signup, name="signup"),
+    path("signup/", views.sign_up, name="signup"),
+    path("logout/", views.log_out, name="logout"),
 ]
