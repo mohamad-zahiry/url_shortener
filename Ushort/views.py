@@ -56,3 +56,7 @@ def log_in(request):
 def log_out(request):
     logout(request)
     return redirect("Ushort:home")
+
+
+def panel(request):
+    return render(request, "Ushort/panel/pages/profile.html", {})
