@@ -1,3 +1,4 @@
+from wsgiref.validate import InputWrapper
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -100,10 +101,10 @@ class Creator(models.Model):
         self.max_monitored_url = Creator.Account.Complete.max_monitored_url
         self.save()
 
-    @classmethod
+    @staticmethod
     def by_request(request):
         qs = Creator.objects.filter(user=request.user)
-        if qs.count == 0:
+        if qs.count() == 1:
             return qs.first()
         return None
 
