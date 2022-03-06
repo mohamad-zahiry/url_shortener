@@ -12,7 +12,7 @@ def home(request):
 
 def sign_up(request):
     if request.user.is_authenticated:
-        return redirect("Ushort:home")  # ! fix: redirect to "user panel"
+        return redirect("Ushort:panel-dashboard")
 
     form = CreatorSignUpForm(request.POST or None)
     if form.is_valid():
@@ -21,7 +21,7 @@ def sign_up(request):
         user = Creator.objects.get(email=form.cleaned_data.get("email")).user
         login(request, user)
 
-        return redirect("Ushort:home")  # ! fix: redirect to "user panel"
+        return redirect("Ushort:panel-dashboard")
 
     context = {"form": form}
     return render(request, "Ushort/signup.html", context)
@@ -31,7 +31,7 @@ def log_in(request):
     invalid_credentials = None
 
     if request.user.is_authenticated:
-        return redirect("Ushort:home")  # ! fix: redirect to "user panel"
+        return redirect("Ushort:panel-dashboard")
 
     form = CreatorLogInForm(request.POST or None)
     if form.is_valid():
@@ -43,7 +43,7 @@ def log_in(request):
 
         if user is not None:
             login(request, user)
-            return redirect("Ushort:home")  # ! fix: redirect to "user panel"
+            return redirect("Ushort:panel-dashboard")
 
         invalid_credentials = "Invalid credentials"
 
