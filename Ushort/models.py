@@ -80,6 +80,23 @@ class Creator(models.Model):
         urls_visitors = Url.objects.filter(creator=self).only("visitors")
         return sum(u.visitors for u in urls_visitors)
 
+    @property
+    def simple_urls_number(self):
+        return Url.objects.filter(creator=self, monitored=False).count()
+
+    @property
+    def monitored_urls_number(self):
+        return Url.objects.filter(creator=self, monitored=True).count()
+
+    @property
+    def all_urls_number(self):
+        return self.simple_urls_number + self.monitored_urls_number
+
+    @property
+    def active_urls_number(self):
+        qs = Url.objects.filter(creator=self)
+        return sum(filter(lambda u: not u.is_expired, qs))
+
     def set_to_Free_Account(self):
         self.account_type = Creator.Account.Types.FREE
         self.max_url = Creator.Account.Free.max_url
