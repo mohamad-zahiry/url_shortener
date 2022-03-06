@@ -74,6 +74,11 @@ class Creator(models.Model):
     def type(self):
         return self.get_account_type_display()
 
+    @property
+    def all_visitors(self):
+        urls_visitors = Url.objects.filter(creator=self).only("visitors")
+        return sum(u.visitors for u in urls_visitors)
+
     def set_to_Free_Account(self):
         self.account_type = Creator.Account.Types.FREE
         self.max_url = Creator.Account.Free.max_url
@@ -94,6 +99,13 @@ class Creator(models.Model):
         self.max_url_a_day = Creator.Account.Complete.max_url_a_day
         self.max_monitored_url = Creator.Account.Complete.max_monitored_url
         self.save()
+
+    @classmethod
+    def by_request(request):
+        qs = Creator.objects.filter(user=request.user)
+        if qs.count == 0:
+            return qs.first()
+        return None
 
 
 class Url(models.Model):
