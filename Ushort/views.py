@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 
 from Ushort.forms import CreatorSignUpForm, CreatorLogInForm
 from Ushort.models import Creator
@@ -58,5 +59,13 @@ def log_out(request):
     return redirect("Ushort:home")
 
 
-def panel(request):
-    return render(request, "Ushort/panel/pages/profile.html", {})
+@login_required(login_url="Ushort:login")
+def panel_dashboard(request):
+    creator = Creator.by_request(request)
+    context = {
+        "all_visitors": creator.all_visitors,
+        "simple_urls": creator.simple_urls_number,
+        "monitored_urls": creator.monitored_urls_number,
+        "active_urls": creator.active_urls_number,
+    }
+    return render(request, "Ushort/panel/dashboard.html", context)
