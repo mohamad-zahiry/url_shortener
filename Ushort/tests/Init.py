@@ -17,7 +17,7 @@ class Init(TestCase):
     def tearDown(self):
         for url in Url.objects.all():
             url.delete()
-        self.creator.set_to_Free_Account()
+        self.creator.set_Free_Account()
         return super().tearDown()
 
     def UUrl(self):
