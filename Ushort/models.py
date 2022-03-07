@@ -96,21 +96,21 @@ class Creator(models.Model):
         qs = Url.objects.filter(creator=self)
         return sum(filter(lambda u: not u.is_expired, qs))
 
-    def set_to_Free_Account(self):
+    def set_Free_Account(self):
         self.account_type = Creator.Account.Types.FREE
         self.max_url = Creator.Account.Free.max_url
         self.max_url_a_day = Creator.Account.Free.max_url_a_day
         self.max_monitored_url = Creator.Account.Free.max_monitored_url
         self.save()
 
-    def set_to_Advanced_Account(self):
+    def set_Advanced_Account(self):
         self.account_type = Creator.Account.Types.ADVANCED
         self.max_url = Creator.Account.Advanced.max_url
         self.max_url_a_day = Creator.Account.Advanced.max_url_a_day
         self.max_monitored_url = Creator.Account.Advanced.max_monitored_url
         self.save()
 
-    def set_to_Complete_Account(self):
+    def set_Complete_Account(self):
         self.account_type = Creator.Account.Types.COMPLETE
         self.max_url = Creator.Account.Complete.max_url
         self.max_url_a_day = Creator.Account.Complete.max_url_a_day
