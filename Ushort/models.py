@@ -1,4 +1,21 @@
-from django.db import models
+from django.db.models import (
+    Model,
+    BooleanField,
+    CharField,
+    DateField,
+    DateTimeField,
+    DurationField,
+    EmailField,
+    IntegerField,
+    OneToOneField,
+    TextField,
+    URLField,
+    ForeignKey,
+    TextChoices,
+    CASCADE,
+    SET_NULL,
+    DO_NOTHING,
+)
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -9,11 +26,11 @@ import requests
 import json
 
 
-class Creator(models.Model):
+class Creator(Model):
     """This model represents the User-model with some additional functions and uses email as the username"""
 
     class Account:
-        class Types(models.TextChoices):
+        class Types(TextChoices):
             FREE = "F", _("Free")
             ADVANCED = "A", _("Advanced")
             COMPLETE = "C", _("Complete")
@@ -33,13 +50,13 @@ class Creator(models.Model):
             max_url_a_day = 100
             max_monitored_url = 1000
 
-    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-    email = models.EmailField(unique=True)
+    user = OneToOneField(to=User, on_delete=CASCADE)
+    email = EmailField(unique=True)
 
-    account_type = models.TextField(choices=Account.Types.choices, max_length=1, default=Account.Types.FREE)
-    max_url = models.IntegerField(default=25, help_text="Maximum number of URLs a creator can generate")
-    max_url_a_day = models.IntegerField(default=5, help_text="Maximum number of URLs a creator can generate per day")
-    max_monitored_url = models.IntegerField(default=0, help_text="Maximum number of Monitored-URLs a creator can generate")
+    account_type = TextField(choices=Account.Types.choices, max_length=1, default=Account.Types.FREE)
+    max_url = IntegerField(default=25, help_text="Maximum number of URLs a creator can generate")
+    max_url_a_day = IntegerField(default=5, help_text="Maximum number of URLs a creator can generate per day")
+    max_monitored_url = IntegerField(default=0, help_text="Maximum number of Monitored-URLs a creator can generate")
 
     def __str__(self):
         return self.user.username
@@ -125,21 +142,21 @@ class Creator(models.Model):
         return None
 
 
-class Url(models.Model):
-    url = models.CharField(max_length=10, unique=True)
-    target = models.URLField()
-    creator = models.ForeignKey(to=Creator, to_field="email", on_delete=models.DO_NOTHING)
+class Url(Model):
+    url = CharField(max_length=10, unique=True)
+    target = URLField()
+    creator = ForeignKey(to=Creator, to_field="email", on_delete=DO_NOTHING)
 
-    visitors = models.IntegerField(default=0)
-    visitors_after_expire = models.IntegerField(default=0)
+    visitors = IntegerField(default=0)
+    visitors_after_expire = IntegerField(default=0)
 
-    access_start = models.DateTimeField(auto_now_add=True)
-    access_duration = models.DurationField(default=timezone.timedelta(days=10), help_text="Duration of access to the URL")
-    access_code = models.CharField(max_length=64, default="", blank=True, null=True, help_text="Restricts access to this URL with the access code")
+    access_start = DateTimeField(auto_now_add=True)
+    access_duration = DurationField(default=timezone.timedelta(days=10), help_text="Duration of access to the URL")
+    access_code = CharField(max_length=64, default="", blank=True, null=True, help_text="Restricts access to this URL with the access code")
 
-    monitored = models.BooleanField(default=False, help_text="If checked, time, date, country and number of visitors will be collected for the URL until it expires")
+    monitored = BooleanField(default=False, help_text="If checked, time, date, country and number of visitors will be collected for the URL until it expires")
 
-    created = models.DateTimeField(auto_now_add=True)
+    created = DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["creator", "-created"]
@@ -215,11 +232,11 @@ class Url(models.Model):
         self.save()
 
 
-class Country(models.Model):
+class Country(Model):
     # ? "-" used for the unknown IPs. The "name" field can't be empty because
     # ? of "Visitor" model, which use "Country.name" as "ForeignKey"
-    name = models.CharField(max_length=50, unique=True, default="-")
-    code = models.CharField(max_length=2, unique=True, default="-", help_text="ISO 3166-1 alpha-2 codes are two-letter country codes")
+    name = CharField(max_length=50, unique=True, default="-")
+    code = CharField(max_length=2, unique=True, default="-", help_text="ISO 3166-1 alpha-2 codes are two-letter country codes")
 
     class Meta:
         verbose_name_plural = "Countries"
@@ -257,7 +274,7 @@ class Country(models.Model):
         return {v.country for v in Visitor.objects.filter(url=url).only("country")}
 
 
-class Visitor(models.Model):
+class Visitor(Model):
     TIME_FRAMES = [
         (0, "00:00 - 01:59"),
         (2, "02:00 - 03:59"),
@@ -273,13 +290,13 @@ class Visitor(models.Model):
         (22, "22:00 - 23:59"),
     ]
 
-    url = models.ForeignKey(to=Url, on_delete=models.SET_NULL, null=True)
-    country = models.ForeignKey(to=Country, on_delete=models.DO_NOTHING, to_field="name", default="-")
+    url = ForeignKey(to=Url, on_delete=SET_NULL, null=True)
+    country = ForeignKey(to=Country, on_delete=DO_NOTHING, to_field="name", default="-")
 
-    date = models.DateField(auto_now_add=True)
-    hour = models.IntegerField(choices=TIME_FRAMES, help_text="Stores the visit time in 2-hour timeframes")
+    date = DateField(auto_now_add=True)
+    hour = IntegerField(choices=TIME_FRAMES, help_text="Stores the visit time in 2-hour timeframes")
 
-    number = models.IntegerField(default=0)
+    number = IntegerField(default=0)
 
     class Meta:
         ordering = ["-date", "url", "-number"]
