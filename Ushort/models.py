@@ -150,7 +150,7 @@ class Url(Model):
     visitors = IntegerField(default=0)
     visitors_after_expire = IntegerField(default=0)
 
-    access_start = DateTimeField(auto_now_add=True)
+    access_start = DateTimeField(default=timezone.now)
     access_duration = DurationField(default=timezone.timedelta(days=10), help_text="Duration of access to the URL")
     access_code = CharField(max_length=64, default="", blank=True, null=True, help_text="Restricts access to this URL with the access code")
 
