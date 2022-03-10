@@ -84,7 +84,7 @@ class UrlModelTests(Init):
         return self.assertRaises(ValidationError, url.clean)
 
     def test__clean__with_a_NonFreeAccount_creator_to_create_monitored_url(self):
-        self.creator.set_to_Complete_Account()
+        self.creator.set_Complete_Account()
         url = self.make_url(monitored=True)
         return self.assertEqual(url.clean(), None)
 
@@ -102,14 +102,14 @@ class UrlModelTests(Init):
         self.assertEqual(url.visitors_after_expire, 1)
 
     def test__add_visitor__with_monitored_url(self):
-        self.creator.set_to_Advanced_Account()
+        self.creator.set_Advanced_Account()
         url = self.make_url(save=True, monitored=True)
         url.add_visitor(self.request_factory.get(f"/go2/{url.url}"))
         url = Url.objects.get(url=url.url)
         self.assertEqual(url.visitors, 1)
 
     def test__add_visitor__with_monitored_expired_url(self):
-        self.creator.set_to_Advanced_Account()
+        self.creator.set_Advanced_Account()
         url = self.make_url(save=True, monitored=True, access_duration=tz.timedelta())
         req = self.request_factory.get(f"/go2/{url.url}")
         url.add_visitor(req)
