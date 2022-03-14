@@ -111,7 +111,7 @@ class Creator(Model):
     @property
     def active_urls_number(self):
         qs = Url.objects.filter(creator=self)
-        return sum(filter(lambda u: not u.is_expired, qs))
+        return len(list(filter(lambda u: not u.is_expired, qs)))
 
     def set_Free_Account(self):
         self.account_type = Creator.Account.Types.FREE
