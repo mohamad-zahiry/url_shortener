@@ -113,6 +113,11 @@ class Creator(Model):
         qs = Url.objects.filter(creator=self)
         return len(list(filter(lambda u: not u.is_expired, qs)))
 
+    @property
+    def expired_urls_number(self):
+        qs = Url.objects.filter(creator=self)
+        return len(list(filter(lambda u: u.is_expired, qs)))
+
     def set_Free_Account(self):
         self.account_type = Creator.Account.Types.FREE
         self.max_url = Creator.Account.Free.max_url
