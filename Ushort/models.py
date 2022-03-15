@@ -253,7 +253,7 @@ class Country(Model):
     def __str__(self):
         return "No Country" if self.name == "-" else self.name
 
-    def visitor_count(self):
+    def visitor_number(self):
         return Visitor.all_from_country(country=self)
 
     @staticmethod
