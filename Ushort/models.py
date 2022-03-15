@@ -216,6 +216,12 @@ class Url(Model):
         return self.access_duration  # if isn't started, returns the "Url.access_duration"
 
     @property
+    def time_left_percent(self):
+        if self.is_started:
+            return round((timezone.now() - self.access_start) / self.access_duration * 100, 1)
+        return 0
+
+    @property
     def is_public(self):
         if self.access_code:
             return False
