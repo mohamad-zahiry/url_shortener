@@ -3,7 +3,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 
 from Ushort.forms import CreatorSignUpForm, CreatorLogInForm
-from Ushort.models import Creator
+from Ushort.models import Creator, Url
+
+from random import choice
 
 
 def home(request):
@@ -69,3 +71,10 @@ def panel_dashboard(request):
         "active_urls": creator.active_urls_number,
     }
     return render(request, "Ushort/panel/dashboard.html", context)
+
+
+def go2(request, url):
+    url = Url.objects.get(url=url)
+    url.add_visitor(request)
+
+    return redirect(url.target)
