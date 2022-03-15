@@ -139,6 +139,10 @@ class Creator(Model):
         self.max_monitored_url = Creator.Account.Complete.max_monitored_url
         self.save()
 
+    def n_last_urls(self, num=None):
+        qs = Url.objects.filter(creator=self)[:num]
+        return qs[:num] if num is not None else qs
+
     @staticmethod
     def by_request(request):
         qs = Creator.objects.filter(user=request.user)
