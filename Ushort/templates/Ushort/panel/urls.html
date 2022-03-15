@@ -1,0 +1,331 @@
+{% extends 'Ushort/panel/base.html' %}
+{% load static %}
+
+{% block titleTag %}URLs{% endblock titleTag %}
+{% block navPageName %}URLs{% endblock navPageName %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-8 col-md-12">
+      <div class="card bg-transparent shadow-none">
+        
+        <iv class="col-12 mb-md-0 mb-4">
+          <div class="card">
+          <div class="card-header pb-0">
+            <div class="row">
+              <!-- url table title: start -->
+              <div class="col-lg-6 col-7">
+                <p class="mb-0">
+                  <span class="h5 font-bold"><strong>URLs</strong></span>
+                  <small>
+                    <!-- active urls number -->
+                    <span class="font-weight-bold ms-1">{{active_urls}}</span> Active
+                    <i class="fa fa-check text-info" aria-hidden="true"></i>
+                    <!-- exprired urls number -->
+                    <span class="font-weight-bold ms-1">{{expired_urls}}</span> Expired
+                    <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                  </small>
+                </p>
+              </div>
+              <!-- url table title: end -->
+              <!-- dropdown: start -->
+              <div class="col-lg-6 col-5 my-auto text-end">
+                <div class="dropdown float-lg-end pe-4">
+                  <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v text-secondary"></i>
+                  </a>
+                  <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- dropdown: end -->
+            </div>
+          </div>
+          <!-- url table title: end -->
+
+          <!-- urls table: start -->
+          <div class="card-body px-3 pb-2">
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0">
+
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">URL</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Visitor</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Country</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Available</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <!-- last 10 urls -->
+                  {% for url in last_10_urls %}
+                    <tr>
+                      <td>
+                        <div class="d-flex px-4 py-1">
+                          <div class="d-flex flex-column justify-content-left">
+                            <h6 class="mb-0 text-sm">{{url}}</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <!-- Visitors number -->
+                      <td class="align-middle text-left text-sm px-4">
+                        <span class="text-xs font-weight-bold">{{url.visitors}}</span>
+                      </td>
+
+                      <td class="align-left px-4">
+                          {% for country in url.visitors_countries_list %}
+                              <span class="">{{country.code}}</span>
+                          {% endfor %}
+                      </td>
+
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xs font-weight-bold">{{url.time_left_percent}}%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-{{url.time_left_percent|floatformat:0}}" role="progressbar" aria-valuenow="{{url.time_left_percent|floatformat:0}}" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  <!--
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="{% static 'panel/img/small-logos/logo-xd.svg' %}" class="avatar avatar-sm me-3" alt="xd">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">Soft UI XD Version</h6>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>
+                      <div class="avatar-group mt-2">
+                        <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
+                          <img src="{% static 'panel/img/team-1.jpg' %}" alt="team1">
+                        </a>
+                      </div>
+                    </td>
+
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-xs font-weight-bold"> $14,000 </span>
+                    </td>
+
+                    <td class="align-middle">
+                      <div class="progress-wrapper w-75 mx-auto">
+                        <div class="progress-info">
+                          <div class="progress-percentage">
+                            <span class="text-xs font-weight-bold">60%</span>
+                          </div>
+                        </div>
+                        <div class="progress">
+                          <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </div>
+                    </td>
+
+                  </tr> 
+                  -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- urls table: end -->
+        </div>
+
+        <div class="col-12">
+          <div class="row my-4">
+            <div class="col-12 mb-md-0 mb-4">
+              <div class="card p-4">
+                <form >
+                  <!-- target link -->
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+                        <label class="form-control-label" for="Target"><i class="fa fa-globe-americas"></i> Target Link</label>
+                        <div class="form-group">
+                          <input id="Target" type="text" class="form-control shadow-none is-valid" placeholder="https://example.com" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- url -->
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+                        <label class="form-control-label" for="url"><i class="fa fa-link"></i> URL</label>
+                        <div class="input-group">
+                          <span class="input-group-text border-danger" id="basic-addon1">/</span>
+                          <input id="url" type="text" class="form-control shadow-none is-invalid" placeholder="url" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <!-- url start date -->
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="start_date" class="form-control-label"><i class="fa fa-hourglass-start"></i> Start Date</label>
+                        <input class="form-control shadow-none" type="date" value="2018-11-23" id="start_date">
+                      </div>
+                    </div>
+
+                    <!-- url start time -->
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="start_time" class="form-control-label">Time</label>
+                        <input class="form-control shadow-none" type="time" value="2018-11-23" id="start_time">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <!-- expire date -->
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="expire_date" class="form-control-label"><i class="fa fa-hourglass-end"></i> Expire Date</label>
+                        <input class="form-control shadow-none" type="date" value="2018-11-23" id="expire_date">
+                      </div>
+                    </div>
+
+                    <!-- expire time -->
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="expire_time" class="form-control-label">Time</label>
+                        <input class="form-control shadow-none" type="time" value="2018-11-23" id="expire_time">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- access code -->
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+                          <label class="form-control-label" for="access_code"><i class="fas fa-key"></i> Access Code</label>
+                          <input id="access_code" type="text" class="form-control shadow-none" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" aria-label="Username" aria-describedby="basic-addon1">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- monitored url -->
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-check">
+                        <label class="custom-control-label" for="monitored">Monitore this URL</label>
+                        <input class="form-check-input" type="checkbox" value="" id="monitored" checked="">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mt-4">
+                    <!-- create button -->
+                    <div class="col-md-2">
+                      <div class="form-group">                      
+                          <button type="button" class="btn bg-gradient-success">Create</button>
+                      </div>
+                    </div>
+
+                    <!-- clear button -->
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <input type="reset" class="btn bg-gradient-danger" type="reset" value="Clear">
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>  
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-sm-12">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h6>Orders overview</h6>
+            <p class="text-sm">
+              <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+              <span class="font-weight-bold">24%</span> this month
+            </p>
+          </div>
+          <div class="card-body p-3">
+            <div class="timeline timeline-one-side">
+              <div class="timeline-block mb-3">
+                <span class="timeline-step">
+                  <i class="ni ni-bell-55 text-success text-gradient"></i>
+                </span>
+                <div class="timeline-content">
+                  <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, Design changes</h6>
+                  <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
+                </div>
+              </div>
+              <div class="timeline-block mb-3">
+                <span class="timeline-step">
+                  <i class="ni ni-html5 text-danger text-gradient"></i>
+                </span>
+                <div class="timeline-content">
+                  <h6 class="text-dark text-sm font-weight-bold mb-0">New order #1832412</h6>
+                  <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
+                </div>
+              </div>
+              <div class="timeline-block mb-3">
+                <span class="timeline-step">
+                  <i class="ni ni-cart text-info text-gradient"></i>
+                </span>
+                <div class="timeline-content">
+                  <h6 class="text-dark text-sm font-weight-bold mb-0">Server payments for April</h6>
+                  <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
+                </div>
+              </div>
+              <div class="timeline-block mb-3">
+                <span class="timeline-step">
+                  <i class="ni ni-credit-card text-warning text-gradient"></i>
+                </span>
+                <div class="timeline-content">
+                  <h6 class="text-dark text-sm font-weight-bold mb-0">New card added for order #4395133</h6>
+                  <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
+                </div>
+              </div>
+              <div class="timeline-block mb-3">
+                <span class="timeline-step">
+                  <i class="ni ni-key-25 text-primary text-gradient"></i>
+                </span>
+                <div class="timeline-content">
+                  <h6 class="text-dark text-sm font-weight-bold mb-0">Unlock packages for development</h6>
+                  <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
+                </div>
+              </div>
+              <div class="timeline-block">
+                <span class="timeline-step">
+                  <i class="ni ni-money-coins text-dark text-gradient"></i>
+                </span>
+                <div class="timeline-content">
+                  <h6 class="text-dark text-sm font-weight-bold mb-0">New order #9583120</h6>
+                  <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+  </div>
+</div>
+{% endblock content %}
