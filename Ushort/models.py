@@ -221,6 +221,10 @@ class Url(Model):
             return False
         return True
 
+    @property
+    def visitors_countries_list(self):
+        return Country.countries_for_url(url=self)
+
     def check_access_code(self, access_code):
         if self.access_code == str(access_code):
             return True
