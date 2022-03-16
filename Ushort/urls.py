@@ -9,5 +9,6 @@ urlpatterns = [
     path("login/", views.log_in, name="login"),
     path("logout/", views.log_out, name="logout"),
     path("panel/dashboard/", views.panel_dashboard, name="panel-dashboard"),
+    path("panel/urls/", views.panel_urls, name="panel-urls"),
     path("go2/<str:url>/", views.go2, name="go2"),
 ]
