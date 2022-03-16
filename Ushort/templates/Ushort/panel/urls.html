@@ -77,12 +77,14 @@
                         <span class="text-xs font-weight-bold">{{url.visitors}}</span>
                       </td>
 
+                      <!-- country list -->
                       <td class="align-left px-4">
                           {% for country in url.visitors_countries_list %}
-                              <span class="">{{country.code}}</span>
+                            <span class="">{{country.code}}</span>
                           {% endfor %}
                       </td>
 
+                      <!-- left time -->
                       <td class="align-middle">
                         <div class="progress-wrapper w-75 mx-auto">
                           <div class="progress-info">
@@ -160,6 +162,13 @@
                         </div>
                       </div>
                     </div>
+
+                    <!-- target link errors -->
+                    <div class="col-lg-4 col-md-4 col-sm-12 pt-3 d-flex align-items-center">
+                        <p class="my-auto">
+                          error
+                        </p>
+                    </div>
                   </div>
 
                   <!-- url -->
@@ -172,6 +181,13 @@
                           <input id="url" type="text" class="form-control shadow-none is-invalid" placeholder="url" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                       </div>
+                    </div>
+
+                    <!-- url errors -->
+                    <div class="col-lg-4 col-md-4 col-sm-12 pt-3 d-flex align-items-center">
+                      <p class="my-auto">
+                        error
+                      </p>
                     </div>
                   </div>
 
@@ -191,6 +207,13 @@
                         <input class="form-control shadow-none" type="time" value="2018-11-23" id="start_time">
                       </div>
                     </div>
+
+                    <!-- start time errors -->
+                    <div class="col-lg-4 col-md-4 col-sm-12 pt-3 d-flex align-items-center">
+                      <p class="my-auto text-danger">
+                        error
+                      </p>
+                    </div>
                   </div>
 
                   <div class="row">
@@ -209,6 +232,13 @@
                         <input class="form-control shadow-none" type="time" value="2018-11-23" id="expire_time">
                       </div>
                     </div>
+
+                    <!-- start time errors -->
+                    <div class="col-lg-4 col-md-4 col-sm-12 pt-3 d-flex align-items-center">
+                      <p class="my-auto">
+                        error
+                      </p>
+                    </div>
                   </div>
 
                   <!-- access code -->
@@ -218,6 +248,13 @@
                           <label class="form-control-label" for="access_code"><i class="fas fa-key"></i> Access Code</label>
                           <input id="access_code" type="text" class="form-control shadow-none" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" aria-label="Username" aria-describedby="basic-addon1">
                       </div>
+                    </div>
+
+                    <!-- access code errors -->
+                    <div class="col-lg-4 col-md-4 col-sm-12 pt-3 d-flex align-items-center">
+                      <p class="my-auto">
+                        error
+                      </p>
                     </div>
                   </div>
                   
