@@ -73,8 +73,18 @@ def panel_dashboard(request):
     return render(request, "Ushort/panel/dashboard.html", context)
 
 
+@login_required(login_url="Ushort:login")
+def panel_urls(request):
+    creator = Creator.by_request(request)
+    context = {
+        "active_urls": creator.active_urls_number,
+        "expired_urls": creator.expired_urls_number,
+        "last_10_urls": creator.n_last_urls(10),
+    }
+    return render(request, "Ushort/panel/urls.html", context)
+
+
 def go2(request, url):
     url = Url.objects.get(url=url)
     url.add_visitor(request)
-
     return redirect(url.target)
