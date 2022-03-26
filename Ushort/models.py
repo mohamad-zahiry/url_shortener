@@ -352,7 +352,7 @@ class Visitor(Model):
         data = {}
         countries = Country.countries_for_url(url=url)
         for country in countries:
-            data[f"{country}"] = Visitor.for_url_from_country(url=url, country=country)
+            data[country] = Visitor.for_url_from_country(url=url, country=country)
         return data
 
     @staticmethod
