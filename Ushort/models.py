@@ -231,6 +231,10 @@ class Url(Model):
     def visitors_countries_list(self):
         return Country.countries_for_url(url=self)
 
+    @property
+    def most_country(self):
+        return Visitor.for_url_most_country(url=self)
+
     def check_access_code(self, access_code):
         if self.access_code == str(access_code):
             return True
@@ -363,6 +367,19 @@ class Visitor(Model):
         for country in countries:
             data[f"{country}"] = Visitor.for_url_from_country_hourly(url=url, country=country)
         return data
+
+    @staticmethod
+    def for_url_most_country(url: Url):
+        lst = {}
+        countries = Country.countries_for_url(url=url)
+        for country in countries:
+            qs = Visitor.objects.filter(url=url, country=country)
+            number = 0
+            for c in qs:
+                number += c.number
+            lst.update({country: number})
+        x = sorted(lst.items(), key=lambda x: x[1], reverse=True)
+        return x[0][0]
 
     @staticmethod
     def increase_or_create(url: Url = None, country: Country = None):
