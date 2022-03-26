@@ -1,3 +1,4 @@
+from shutil import register_unpack_format
 from django.db.models import (
     Model,
     BooleanField,
@@ -235,6 +236,10 @@ class Url(Model):
     def most_country(self):
         return Visitor.for_url_most_country(url=self)
 
+    @property
+    def least_country(self):
+        return Visitor.for_url_least_country(url=self)
+
     def check_access_code(self, access_code):
         if self.access_code == str(access_code):
             return True
@@ -374,6 +379,14 @@ class Visitor(Model):
             Visitor.for_url_countriely(url=url).items(),
             key=lambda x: x[1],
             reverse=True,
+        )[0]
+        return country_number[0]
+
+    @staticmethod
+    def for_url_least_country(url: Url):
+        country_number = sorted(
+            Visitor.for_url_countriely(url=url).items(),
+            key=lambda x: x[1],
         )[0]
         return country_number[0]
 
