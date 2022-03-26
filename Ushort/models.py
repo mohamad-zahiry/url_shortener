@@ -370,16 +370,12 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_most_country(url: Url):
-        lst = {}
-        countries = Country.countries_for_url(url=url)
-        for country in countries:
-            qs = Visitor.objects.filter(url=url, country=country)
-            number = 0
-            for c in qs:
-                number += c.number
-            lst.update({country: number})
-        x = sorted(lst.items(), key=lambda x: x[1], reverse=True)
-        return x[0][0]
+        country_number = sorted(
+            Visitor.for_url_countriely(url=url).items(),
+            key=lambda x: x[1],
+            reverse=True,
+        )[0]
+        return country_number[0]
 
     @staticmethod
     def increase_or_create(url: Url = None, country: Country = None):
