@@ -356,6 +356,15 @@ class Visitor(Model):
         return data
 
     @staticmethod
+    def for_url_hourly(url: Url):
+        """Gives a categorized number of visitors, grouped by hour, for a specific URL"""
+        timeframe_number = {}
+        qs = Visitor.objects.filter(url=url).only("number")
+        for tf, _ in Visitor.TIME_FRAMES:
+            timeframe_number.update({tf: sum([V.number for V in qs.filter(hour=tf)])})
+        return timeframe_number
+
+    @staticmethod
     def for_url_from_country_hourly(url: Url, country: Country):
         """Gives a categorized number of visitors, grouped by hour, for a specific URL and Country"""
         data = {}
