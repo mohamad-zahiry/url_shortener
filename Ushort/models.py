@@ -1,4 +1,3 @@
-from shutil import register_unpack_format
 from django.db.models import (
     Model,
     BooleanField,
