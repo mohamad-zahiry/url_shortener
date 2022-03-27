@@ -1,4 +1,10 @@
-from django.forms import EmailField, Form, CharField, PasswordInput, EmailInput
+from django.forms import (
+    EmailField,
+    Form,
+    CharField,
+    PasswordInput,
+    EmailInput,
+)
 from django.utils.translation import gettext_lazy as _
 from Ushort.models import Creator
 from django.contrib.auth.models import User
