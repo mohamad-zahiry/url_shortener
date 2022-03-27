@@ -384,11 +384,11 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_least_country(url: Url):
-        country_number = sorted(
+        country, _ = sorted(
             Visitor.for_url_countriely(url=url).items(),
             key=lambda x: x[1],
         )[0]
-        return country_number[0]
+        return country
 
     @staticmethod
     def increase_or_create(url: Url = None, country: Country = None):
