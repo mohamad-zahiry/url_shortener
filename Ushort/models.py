@@ -375,12 +375,12 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_most_country(url: Url):
-        country_number = sorted(
+        country, _ = sorted(
             Visitor.for_url_countriely(url=url).items(),
             key=lambda x: x[1],
             reverse=True,
         )[0]
-        return country_number[0]
+        return country
 
     @staticmethod
     def for_url_least_country(url: Url):
