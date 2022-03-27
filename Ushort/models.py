@@ -359,8 +359,8 @@ class Visitor(Model):
         """Gives a categorized number of visitors, grouped by hour, for a specific URL"""
         timeframe_number = {}
         qs = Visitor.objects.filter(url=url).only("number")
-        for tf, _ in Visitor.TIME_FRAMES:
-            timeframe_number.update({tf: sum([V.number for V in qs.filter(hour=tf)])})
+        for tf in Visitor.TIME_FRAMES:
+            timeframe_number.update({tf: sum([V.number for V in qs.filter(hour=tf[0])])})
         return timeframe_number
 
     @staticmethod
