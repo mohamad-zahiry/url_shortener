@@ -239,6 +239,14 @@ class Url(Model):
     def least_country(self):
         return Visitor.for_url_least_country(url=self)
 
+    @property
+    def most_hour(self):
+        return Visitor.for_url_most_hour(url=self)
+
+    @property
+    def least_hour(self):
+        return Visitor.for_url_least_hour(url=self)
+
     def check_access_code(self, access_code):
         if self.access_code == str(access_code):
             return True
