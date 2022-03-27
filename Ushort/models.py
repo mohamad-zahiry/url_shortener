@@ -399,6 +399,23 @@ class Visitor(Model):
         return country
 
     @staticmethod
+    def for_url_most_hour(url: Url):
+        hour, _ = sorted(
+            Visitor.for_url_hourly(url=url).items(),
+            key=lambda x: x[1],
+            reverse=True,
+        )[0]
+        return hour
+
+    @staticmethod
+    def for_url_least_hour(url: Url):
+        hour, _ = sorted(
+            Visitor.for_url_hourly(url=url).items(),
+            key=lambda x: x[1],
+        )[0]
+        return hour
+
+    @staticmethod
     def increase_or_create(url: Url = None, country: Country = None):
         obj, _ = Visitor.objects.get_or_create(
             url=url,
