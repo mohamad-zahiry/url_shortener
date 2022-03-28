@@ -80,7 +80,24 @@ def panel_urls(request):
         "active_urls": creator.active_urls_number,
         "expired_urls": creator.expired_urls_number,
         "last_10_urls": creator.n_last_urls(10),
+        "most": None,
+        "least": None,
     }
+
+    if Creator.account_type != Creator.Account.Types.FREE:
+        urls = creator.url_set.order_by("-visitors")
+        if urls.exists():
+            context["most"] = {"visited_url": urls.first()}
+            context["least"] = {"visited_url": urls.last()}
+
+        m_urls = urls.filter(monitored=True)
+        if m_urls.exists():
+            max = m_urls.first()
+            min = m_urls.last()
+
+            context["most"].update({"visitors_country": max.most_country, "visiting_time": max.most_hour})
+            context["least"].update({"visitors_country": min.least_country, "visiting_time": min.least_hour})
+    print(context)
     return render(request, "Ushort/panel/urls.html", context)
 
 
