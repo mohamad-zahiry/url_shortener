@@ -97,7 +97,7 @@ def panel_urls(request):
 
             context["most"].update({"visitors_country": max.most_country, "visiting_time": max.most_hour})
             context["least"].update({"visitors_country": min.least_country, "visiting_time": min.least_hour})
-    print(context)
+
     return render(request, "Ushort/panel/urls.html", context)
 
 
