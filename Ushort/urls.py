@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from Ushort import views
 
 app_name = "Ushort"
@@ -11,4 +11,5 @@ urlpatterns = [
     path("panel/dashboard/", views.panel_dashboard, name="panel-dashboard"),
     path("panel/urls/", views.panel_urls, name="panel-urls"),
     path("go2/<str:url>/", views.go2, name="go2"),
+    path("api/", include("Ushort.api.urls")),
 ]
