@@ -192,6 +192,10 @@ class Url(Model):
         super().save(*args, **kwargs)
 
     @property
+    def all_visitors(self):
+        return self.visitors + self.visitors_after_expire
+
+    @property
     def expire_time(self):
         return self.access_start + self.access_duration
 
