@@ -104,4 +104,7 @@ def panel_urls(request):
 def go2(request, url):
     url = Url.objects.get(url=url)
     url.add_visitor(request)
-    return redirect(url.target)
+    if url.is_expired:
+        return redirect("Ushort:home")
+    else:
+        return redirect(url.target)
