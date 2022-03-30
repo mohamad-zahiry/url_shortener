@@ -222,7 +222,13 @@ class Url(Model):
     @property
     def time_left_percent(self):
         if self.is_started:
-            return round((timezone.now() - self.access_start) / self.access_duration * 100, 1)
+            return round(min(100, (timezone.now() - self.access_start) / self.access_duration * 100), 1)
+        return 0
+
+    @property
+    def time_remain_percent(self):
+        if self.is_started:
+            return 100 - self.time_left_percent
         return 0
 
     @property
