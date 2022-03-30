@@ -89,11 +89,11 @@
                         <div class="progress-wrapper w-75 mx-auto">
                           <div class="progress-info">
                             <div class="progress-percentage">
-                              <span class="text-xs font-weight-bold">{{url.time_left_percent}}%</span>
+                              <span class="text-xs font-weight-bold">{{url.time_remain_percent}}%</span>
                             </div>
                           </div>
                           <div class="progress">
-                            <div class="progress-bar bg-gradient-info w-{{url.time_left_percent|floatformat:0}}" role="progressbar" aria-valuenow="{{url.time_left_percent|floatformat:0}}" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-gradient-info w-{{url.time_remain_percent|floatformat:0}}" role="progressbar" aria-valuenow="{{url.time_left_percent|floatformat:0}}" aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                       </td>
