@@ -80,23 +80,25 @@ def panel_urls(request):
         "active_urls": creator.active_urls_number,
         "expired_urls": creator.expired_urls_number,
         "last_10_urls": creator.n_last_urls(10),
-        "most": None,
-        "least": None,
+        "most": {"simple": {}, "monitored": {}},
+        "least": {"simple": {}, "monitored": {}},
     }
 
     if Creator.account_type != Creator.Account.Types.FREE:
         urls = creator.url_set.order_by("-visitors")
         if urls.exists():
-            context["most"] = {"visited_url": urls.first()}
-            context["least"] = {"visited_url": urls.last()}
+            most = urls.first()
+            least = urls.last()
+            context["most"]["simple"] = {"url": most, "visitors": most.visitors}
+            context["least"]["simple"] = {"url": least, "visitors": least.visitors}
 
         m_urls = urls.filter(monitored=True)
         if m_urls.exists():
             max = m_urls.first()
             min = m_urls.last()
 
-            context["most"].update({"visitors_country": max.most_country, "visiting_time": max.most_hour})
-            context["least"].update({"visitors_country": min.least_country, "visiting_time": min.least_hour})
+            context["most"].update({"monitored": {"url": max, "country": max.most_country, "hour": max.most_hour[1]}})
+            context["least"].update({"monitored": {"url": min, "country": min.least_country, "hour": min.least_hour[1]}})
 
     return render(request, "Ushort/panel/urls.html", context)
 
