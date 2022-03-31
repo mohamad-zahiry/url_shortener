@@ -18,6 +18,6 @@ def url_add(request):
             except Exception as e:
                 return Response(e)
     else:
-        return redirect("Ushot:login")
+        return redirect("Ushort:login")
 
     return Response(serializer.data)
