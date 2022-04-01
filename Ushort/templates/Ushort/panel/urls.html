@@ -169,14 +169,14 @@
           <div class="row my-4">
             <div class="col-12 mb-md-0 mb-4">
               <div class="card p-4">
-                <form >
+                <form>
                   <!-- target link -->
                   <div class="row">
                     <div class="col-md-8">
                       <div class="form-group">
                         <label class="form-control-label" for="Target"><i class="fa fa-globe-americas"></i> Target Link</label>
                         <div class="form-group">
-                          <input id="Target" type="text" class="form-control shadow-none is-valid" placeholder="https://example.com" aria-label="Username" aria-describedby="basic-addon1">
+                          <input name="target" id="Target" type="text" class="form-control shadow-none is-valid" placeholder="https://example.com" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                       </div>
                     </div>
@@ -196,7 +196,7 @@
                         <label class="form-control-label" for="url"><i class="fa fa-link"></i> URL</label>
                         <div class="input-group">
                           <span class="input-group-text border-danger" id="basic-addon1">/</span>
-                          <input id="url" type="text" class="form-control shadow-none is-invalid" placeholder="url" aria-label="Username" aria-describedby="basic-addon1">
+                          <input name="url" id="url" type="text" class="form-control shadow-none is-invalid" placeholder="url" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                       </div>
                     </div>
@@ -214,7 +214,7 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="start_date" class="form-control-label"><i class="fa fa-hourglass-start"></i> Start Date</label>
-                        <input class="form-control shadow-none" type="date" value="2018-11-23" id="start_date">
+                        <input name="start_date" class="form-control shadow-none" type="date" value="2018-11-23" id="start_date">
                       </div>
                     </div>
 
@@ -222,7 +222,7 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="start_time" class="form-control-label">Time</label>
-                        <input class="form-control shadow-none" type="time" value="2018-11-23" id="start_time">
+                        <input name="start_time" class="form-control shadow-none" type="time" value="2018-11-23" id="start_time">
                       </div>
                     </div>
 
@@ -239,7 +239,7 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="expire_date" class="form-control-label"><i class="fa fa-hourglass-end"></i> Expire Date</label>
-                        <input class="form-control shadow-none" type="date" value="2018-11-23" id="expire_date">
+                        <input name="expire_date" class="form-control shadow-none" type="date" value="2018-11-23" id="expire_date">
                       </div>
                     </div>
 
@@ -247,7 +247,7 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="expire_time" class="form-control-label">Time</label>
-                        <input class="form-control shadow-none" type="time" value="2018-11-23" id="expire_time">
+                        <input name="expire_time" class="form-control shadow-none" type="time" value="2018-11-23" id="expire_time">
                       </div>
                     </div>
 
@@ -264,7 +264,7 @@
                     <div class="col-md-8">
                       <div class="form-group">
                           <label class="form-control-label" for="access_code"><i class="fas fa-key"></i> Access Code</label>
-                          <input id="access_code" type="text" class="form-control shadow-none" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" aria-label="Username" aria-describedby="basic-addon1">
+                          <input name="access_code" id="access_code" type="text" class="form-control shadow-none" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" aria-label="Username" aria-describedby="basic-addon1">
                       </div>
                     </div>
 
@@ -281,7 +281,7 @@
                     <div class="col-12">
                       <div class="form-check">
                         <label class="custom-control-label" for="monitored">Monitore this URL</label>
-                        <input class="form-check-input" type="checkbox" value="" id="monitored" checked="">
+                        <input name="is_monitored" class="form-check-input" type="checkbox" value="" id="monitored" checked>
                       </div>
                     </div>
                   </div>
@@ -290,14 +290,14 @@
                     <!-- create button -->
                     <div class="col-md-2">
                       <div class="form-group">                      
-                          <button type="button" class="btn bg-gradient-success">Create</button>
+                          <input type="submit" class="btn bg-gradient-success" value="Create">
                       </div>
                     </div>
 
                     <!-- clear button -->
                     <div class="col-md-2">
                       <div class="form-group">
-                        <input type="reset" class="btn bg-gradient-danger" type="reset" value="Clear">
+                        <input type="reset" class="btn bg-gradient-danger" value="Clear">
                       </div>
                     </div>
                   </div>
