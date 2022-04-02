@@ -8,7 +8,6 @@ from rest_framework.serializers import (
 )
 from django.utils import timezone
 
-# local imports
 from Ushort.models import Url
 
 

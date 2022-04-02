@@ -2,7 +2,6 @@ from django.shortcuts import redirect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-# local imports
 from Ushort.api.serializers import UrlCreateSerializer
 from Ushort.models import Url, Creator
 
