@@ -79,7 +79,7 @@ def panel_urls(request):
     context = {
         "active_urls": creator.active_urls_number,
         "expired_urls": creator.expired_urls_number,
-        "last_10_urls": creator.n_last_urls(10),
+        "last_urls": creator.n_last_urls(5),
         "most": {"simple": {}, "monitored": {}},
         "least": {"simple": {}, "monitored": {}},
     }
