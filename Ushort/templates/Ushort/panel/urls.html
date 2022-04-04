@@ -169,7 +169,17 @@
           <div class="row my-4">
             <div class="col-12 mb-md-0 mb-4">
               <div class="card p-4">
-                <form>
+                <!-- Url create form header part: start -->
+                <div class="col-12">
+                  <span class="h5">URLs</span>
+                  <a href="#url_create_form" onclick="setTimeout(() => {window.scrollBy(0, 1000);}, 500);" data-toggle="collapse" class="small text-secondary" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    &nbsp;<i class="fa fa-plus"></i>
+                    new
+                  </a>
+                </div>
+                <!-- Url create form header part: end -->
+                <!-- Url create form: start -->
+                <form class="collapse mt-4" id="url_create_form">
                   <!-- target link -->
                   <div class="row">
                     <div class="col-md-8">
@@ -303,6 +313,7 @@
                   </div>
 
                 </form>
+                <!-- Url create form: end -->
               </div>
             </div>
           </div>
