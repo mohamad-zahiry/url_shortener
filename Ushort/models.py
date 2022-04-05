@@ -228,7 +228,7 @@ class Url(Model):
     @property
     def time_remain_percent(self):
         if self.is_started:
-            return 100 - self.time_left_percent
+            return round(100 - self.time_left_percent, 1)
         return 0
 
     @property
