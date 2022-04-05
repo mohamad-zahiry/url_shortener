@@ -73,8 +73,9 @@
             <div class="row">
               <!-- url table title: start -->
               <div class="col-lg-6 col-7">
-                <p class="mb-0">
-                  <span class="h5 font-bold"><strong>URLs</strong></span>
+                <!-- <div class="row"> -->
+                <div class="col-10">
+                  <p class="h5 font-bold"><strong>URLs</strong></p>
                   <small>
                     <!-- active urls number -->
                     <span class="font-weight-bold ms-1">{{active_urls}}</span> Active
@@ -83,7 +84,12 @@
                     <span class="font-weight-bold ms-1">{{expired_urls}}</span> Expired
                     <i class="fa fa-times text-danger" aria-hidden="true"></i>
                   </small>
-                </p>
+                  &nbsp;
+                  <!-- link to create new url -->
+                  <a href="#url_create_form" class="btn btn-success p-1 mb-0 text-white">
+                    <i class="fa fa-plus text-white"></i> new&nbsp;&nbsp;
+                  </a>
+                </div>                  
               </div>
               <!-- url table title: end -->
               <!-- dropdown: start -->
@@ -169,17 +175,9 @@
           <div class="row my-4">
             <div class="col-12 mb-md-0 mb-4">
               <div class="card p-4">
-                <!-- Url create form header part: start -->
-                <div class="col-12">
-                  <span class="h5">URLs</span>
-                  <a href="#url_create_form" onclick="setTimeout(() => {window.scrollBy(0, 1000);}, 500);" data-toggle="collapse" class="small text-secondary" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    &nbsp;<i class="fa fa-plus"></i>
-                    new
-                  </a>
-                </div>
-                <!-- Url create form header part: end -->
+
                 <!-- Url create form: start -->
-                <form class="collapse mt-4" id="url_create_form">
+                <form id="url_create_form">
                   <!-- target link -->
                   <div class="row">
                     <div class="col-md-8">
