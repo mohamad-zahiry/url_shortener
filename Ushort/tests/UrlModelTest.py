@@ -116,3 +116,8 @@ class UrlModelTests(Init):
         url = Url.objects.get(url=url.url)
         self.assertEqual(url.visitors, 0)
         self.assertEqual(url.visitors_after_expire, 1)
+
+    def test__time_remain_left_percent(self):
+        url = self.make_url()
+        self.assertAlmostEqual(url.time_left_percent, 0, delta=0.1)
+        self.assertAlmostEqual(url.time_remain_percent, 100, delta=0.1)
