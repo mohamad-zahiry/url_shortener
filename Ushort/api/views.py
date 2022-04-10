@@ -1,22 +1,21 @@
-from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from Ushort.api.serializers import UrlCreateSerializer
-from Ushort.models import Url, Creator
+from Ushort.models import Creator
 
 
+@login_required(login_url="Ushort:login")
 @api_view(["POST"])
 def url_add(request):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            serializer = UrlCreateSerializer(request.data or None)
-            creator = Creator.objects.get(user=request.user)
-            try:
-                Url.objects.create(creator=creator, **serializer.data)
-            except Exception as e:
-                return Response(e)
-    else:
-        return redirect("Ushort:login")
+    serializer = UrlCreateSerializer(data=request.data)
+    creator = Creator.by_request(request.user)
 
-    return Response(serializer.data)
+    if creator:
+        if serializer.is_valid():
+            serializer.save(creator=creator)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
