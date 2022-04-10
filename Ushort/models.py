@@ -143,12 +143,15 @@ class Creator(Model):
         qs = Url.objects.filter(creator=self)[:num]
         return qs[:num] if num is not None else qs
 
-    @staticmethod
-    def by_request(request):
-        qs = Creator.objects.filter(user=request.user)
-        if qs.count() == 1:
-            return qs.first()
-        return None
+    @classmethod
+    def by_request(cls, request):
+        try:
+            user = request.user
+        except AttributeError:
+            return None
+
+        qs = Creator.objects.filter(user=user)
+        return qs.first() if qs.exists() else None
 
 
 class Url(Model):
