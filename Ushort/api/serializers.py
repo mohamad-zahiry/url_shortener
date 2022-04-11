@@ -33,3 +33,11 @@ class UrlCreateSerializer(ModelSerializer):
             attrs["access_start"] = timezone.now()
 
         return super().validate(attrs)
+
+
+class UrlListSerializer(ModelSerializer):
+    expired = BooleanField(source="is_expired")
+
+    class Meta:
+        model = Url
+        fields = ["url", "target", "visitors", "expired"]
