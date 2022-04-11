@@ -11,7 +11,7 @@ from Ushort.models import Creator
 @api_view(["POST"])
 def url_add(request):
     serializer = UrlCreateSerializer(data=request.data)
-    creator = Creator.by_request(request.user)
+    creator = Creator.by_request(request)
 
     if creator:
         if serializer.is_valid():
