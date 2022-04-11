@@ -146,11 +146,10 @@ class Creator(Model):
     @classmethod
     def by_request(cls, request):
         try:
-            user = request.user
-        except AttributeError:
+            qs = Creator.objects.filter(user=request.user)
+        except Exception:
             return None
 
-        qs = Creator.objects.filter(user=user)
         return qs.first() if qs.exists() else None
 
 
