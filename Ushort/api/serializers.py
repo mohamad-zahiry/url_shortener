@@ -17,7 +17,7 @@ class UrlCreateSerializer(ModelSerializer):
 
     access_start = DateTimeField(default=timezone.now)
     access_duration = DurationField(default=timezone.timedelta(days=10))
-    access_code = CharField(max_length=64, default="")
+    access_code = CharField(max_length=64, default="", allow_blank=True)
 
     monitored = BooleanField(default=False)
 
