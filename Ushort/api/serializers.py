@@ -25,15 +25,6 @@ class UrlCreateSerializer(ModelSerializer):
         model = Url
         fields = ["url", "target", "access_start", "access_duration", "access_code", "monitored"]
 
-    def validate(self, attrs):
-        if attrs["access_duration"] == "":
-            attrs["access_duration"] = timezone.timedelta(days=10)
-
-        if attrs["access_start"] == "":
-            attrs["access_start"] = timezone.now()
-
-        return super().validate(attrs)
-
 
 class UrlListSerializer(ModelSerializer):
     expired = BooleanField(source="is_expired")
