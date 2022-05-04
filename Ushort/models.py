@@ -381,7 +381,7 @@ class Visitor(Model):
         qs = Visitor.objects.filter(url=url).only("number")
         for tf in Visitor.TIME_FRAMES:
             timeframe_number.update({tf: sum([V.number for V in qs.filter(hour=tf[0])])})
-        return timeframe_number
+        return timeframe_number if url.visitors else {(0, "00:00 - 23:59"): 0}
 
     @staticmethod
     def for_url_from_country_hourly(url: Url, country: Country):
