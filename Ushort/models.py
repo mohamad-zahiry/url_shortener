@@ -403,6 +403,7 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_most_country(url: Url):
+        """Gives the Country which has the most number of visitors for a specific URL"""
         country, _ = sorted(
             Visitor.for_url_countriely(url=url).items(),
             key=lambda x: x[1],
@@ -412,6 +413,7 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_least_country(url: Url):
+        """Gives the Country which has the least number of visitors for a specific URL"""
         country, _ = sorted(
             Visitor.for_url_countriely(url=url).items(),
             key=lambda x: x[1],
@@ -420,6 +422,7 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_most_hour(url: Url):
+        """Gives the hour(time_stamp) which has the most number of visitors for a specific URL"""
         hour, _ = sorted(
             Visitor.for_url_hourly(url=url).items(),
             key=lambda x: x[1],
@@ -429,6 +432,7 @@ class Visitor(Model):
 
     @staticmethod
     def for_url_least_hour(url: Url):
+        """Gives the hour(time_stamp) which has the least number of visitors for a specific URL"""
         hour, _ = sorted(
             Visitor.for_url_hourly(url=url).items(),
             key=lambda x: x[1],
