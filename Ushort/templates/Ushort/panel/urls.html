@@ -178,6 +178,9 @@
 
                 <!-- Url create form: start -->
                 <form id="url_create_form">
+                  
+                  {% csrf_token %}
+
                   <!-- target link -->
                   <div class="row">
                     <div class="col-md-8">
