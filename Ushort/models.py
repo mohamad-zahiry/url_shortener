@@ -372,7 +372,7 @@ class Visitor(Model):
         countries = Country.countries_for_url(url=url)
         for country in countries:
             data[country] = Visitor.for_url_from_country(url=url, country=country)
-        return data
+        return data if data else {Country.objects.get(name="-"): 0}
 
     @staticmethod
     def for_url_hourly(url: Url):
