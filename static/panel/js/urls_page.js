@@ -30,3 +30,62 @@ const addToDate = (date, y, m, d) => {
 
     return newDate
 }
+
+
+const now = new Date()
+const defaultExpireDateTime = new Date(addToDate(now, 0, 0, 10))
+
+
+$("#start_date").val(makeDate(now))
+$("#start_time").val(makeTime(now))
+
+$("#expire_date").val(makeDate(defaultExpireDateTime))
+$("#expire_time").val(makeTime(now))
+
+
+// the "create-url-api" url
+const protocol = $(location).attr("protocol")
+const host = $(location).attr("host")
+const url = `${protocol}//${host}/api/url/add/`
+
+
+// handle submit button
+$("input[type=submit]").click((e) => {
+    e.preventDefault()
+
+    let payload = {}
+
+    $("form").serializeArray().forEach((val, key) => {
+        payload[val.name] = val.value
+    })
+
+    const csrftoken = $("input[name=csrfmiddlewaretoken]").val()
+
+    // =============== A payload smaple ===============
+    // payload = {
+    //     url: "407",
+    //     target: "https://archive.org",
+    //     access_start: "2022-04-17 18:12:56",
+    //     access_duration: "100 12:07:45",
+    //     monitored: true,
+    //     access_code: "helloworld",
+    //     csrfmiddlewaretoken: csrftoken
+    // }
+
+    // send data to api
+    $.ajax({
+        url: url,
+        type: "post",
+        dataType: "json",
+        data: JSON.stringify(payload),
+        headers: { "X-CSRFToken": csrftoken },
+        contentType: "application/json",
+        success: (result, status, xhr) => { console.log(result, status, xhr) },
+        error: (xhr, status, error) => { console.log(error, status, xhr) }
+
+    })
+
+    // 3 - update the error part if need and if not, check it true
+
+    // 4 - after all of these, send the create request to host and update the page information
+})
