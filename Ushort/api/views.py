@@ -18,7 +18,8 @@ def url_add(request):
             serializer.save(creator=creator)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors)
+    return Response(serializer.errors)
 
 
 @login_required(login_url="Ushort:login")
