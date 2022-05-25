@@ -48,6 +48,8 @@ const protocol = $(location).attr("protocol")
 const host = $(location).attr("host")
 const url = `${protocol}//${host}/api/url/add/`
 
+// Getting csrftoken to use in AJAX requests
+const csrftoken = $("input[name=csrfmiddlewaretoken]").val()
 
 // handle submit button
 $("input[type=submit]").click((e) => {
@@ -55,11 +57,9 @@ $("input[type=submit]").click((e) => {
 
     let payload = {}
 
-    $("form").serializeArray().forEach((val, key) => {
+    $("form[id=url_create_form]").serializeArray().forEach((val, key) => {
         payload[val.name] = val.value
     })
-
-    const csrftoken = $("input[name=csrfmiddlewaretoken]").val()
 
     // =============== A payload smaple ===============
     // payload = {
