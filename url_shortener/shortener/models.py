@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from shortener.utils.shortener import short_url
+
 
 class ShortenedUrl(models.Model):
     url = models.URLField(max_length=300)
@@ -20,3 +22,11 @@ class ShortenedUrl(models.Model):
 
     def __str__(self):
         return self.key
+
+    def save(self, *args, **kwargs):
+        key = short_url()
+        while ShortenedUrl.objects.filter(key=key).exists():
+            key = short_url()
+        self.key = key
+
+        super().save(*args, **kwargs)
