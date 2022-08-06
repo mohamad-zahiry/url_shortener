@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 from shortener.utils.shortener import short_url
 
@@ -30,3 +31,6 @@ class ShortenedUrl(models.Model):
         self.key = key
 
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("shortener:url_detail", kwargs={"key": self.key})
