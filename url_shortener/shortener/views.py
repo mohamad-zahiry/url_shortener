@@ -1,6 +1,6 @@
-from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 
 from shortener.models import ShortenedUrl
 
@@ -12,3 +12,10 @@ class ShortenedUrlCreateView(CreateView):
 
     def get_success_url(self):
         return reverse("shortener:create")
+
+
+class ShortenedUrlDetailView(DetailView):
+    model = ShortenedUrl
+    template_name = "shortener/shortened_url_detail_view.html"
+    slug_field = "key"
+    slug_url_kwarg = "key"
