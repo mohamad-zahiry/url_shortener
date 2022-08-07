@@ -11,9 +11,6 @@ class ShortenedUrlCreateView(CreateView):
     fields = ("url", "active_from", "active_until")
     template_name = "shortener/shortened_url_create_view.html"
 
-    def get_success_url(self):
-        return reverse("shortener:create")
-
 
 class ShortenedUrlDetailView(DetailView):
     model = ShortenedUrl
