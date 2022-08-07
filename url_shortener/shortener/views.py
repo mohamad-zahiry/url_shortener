@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 
@@ -11,24 +11,23 @@ class ShortenedUrlCreateView(CreateView):
     template_name = "shortener/shortened_url_create_view.html"
 
 
-class ShortenedUrlDetailView(DetailView):
+class keyAsSlugForShortenedUrlMixin:
+    """A Mixin that use 'key' as slug-field for ShortenedUrl model"""
+
     model = ShortenedUrl
-    template_name = "shortener/shortened_url_detail_view.html"
     slug_field = "key"
     slug_url_kwarg = "key"
 
 
-class ShortenedUrlUpdateView(UpdateView):
-    model = ShortenedUrl
+class ShortenedUrlDetailView(keyAsSlugForShortenedUrlMixin, DetailView):
+    template_name = "shortener/shortened_url_detail_view.html"
+
+
+class ShortenedUrlUpdateView(keyAsSlugForShortenedUrlMixin, UpdateView):
     template_name = "shortener/shortened_url_update_view.html"
     fields = ("active_from", "active_until")
-    slug_field = "key"
-    slug_url_kwarg = "key"
 
 
-class ShortenedUrlDeleteView(DeleteView):
-    model = ShortenedUrl
+class ShortenedUrlDeleteView(keyAsSlugForShortenedUrlMixin, DeleteView):
     template_name = "shortener/shortened_url_delete_view.html"
     success_url = reverse_lazy("shortener:create")
-    slug_field = "key"
-    slug_url_kwarg = "key"
