@@ -20,4 +20,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("shortener/", include("shortener.urls")),
     path("redirect/", include("redirection.urls")),
+    path("auth/", include("authentication.urls")),
 ]
