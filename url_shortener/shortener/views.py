@@ -18,21 +18,17 @@ class ShortenedUrlCreateView(LoginRequiredMixin, CreateView):
     model = ShortenedUrl
     fields = ("url", "active_from", "active_until")
     template_name = "shortener/shortened_url_create_view.html"
-    login_url = "/admin/"
 
 
 class ShortenedUrlDetailView(LoginRequiredMixin, keyAsSlugMixin, DetailView):
     template_name = "shortener/shortened_url_detail_view.html"
-    login_url = "/admin/"
 
 
 class ShortenedUrlUpdateView(LoginRequiredMixin, keyAsSlugMixin, UpdateView):
     template_name = "shortener/shortened_url_update_view.html"
     fields = ("active_from", "active_until")
-    login_url = "/admin/"
 
 
 class ShortenedUrlDeleteView(LoginRequiredMixin, keyAsSlugMixin, DeleteView):
     template_name = "shortener/shortened_url_delete_view.html"
     success_url = reverse_lazy("shortener:create")
-    login_url = "/admin/"
