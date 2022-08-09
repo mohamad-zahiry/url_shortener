@@ -78,8 +78,12 @@ WSGI_APPLICATION = "url_shortener.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "test_db",
+        "USER": "test_user",
+        "PASSWORD": "1234",
+        "HOST": "172.17.0.2",
+        "PORT": "5432",
     }
 }
 
