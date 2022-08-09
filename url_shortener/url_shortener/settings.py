@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "shortener.apps.ShortenerConfig",
     "authentication.apps.AuthenticationConfig",
+    "redirection.apps.RedirectionConfig",
 ]
 
 MIDDLEWARE = [
