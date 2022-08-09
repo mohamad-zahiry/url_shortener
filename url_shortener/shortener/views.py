@@ -5,14 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from shortener.models import ShortenedUrl
 from shortener.forms import ShortenedUrlForm
-
-
-class keyAsSlugMixin:
-    """A Mixin that use 'key' as slug-field for ShortenedUrl model"""
-
-    model = ShortenedUrl
-    slug_field = "key"
-    slug_url_kwarg = "key"
+from shortener.viewmixins import keyAsSlugMixin
 
 
 class ShortenedUrlCreateView(LoginRequiredMixin, CreateView):
