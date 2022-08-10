@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from redirection.models import Country, UrlData
+
+admin.site.register(Country)
+admin.site.register(UrlData)
