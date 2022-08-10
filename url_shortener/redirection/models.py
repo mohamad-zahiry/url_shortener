@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 from shortener.models import ShortenedUrl
+from redirection.utils.country import country_name_by_ip
 
 
 class Country(models.Model):
@@ -12,6 +13,11 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name if self.name else "No Country"
+
+    @classmethod
+    def from_ip(cls, ip):
+        obj, _ = cls.objects.get_or_create(name=country_name_by_ip(ip))
+        return obj
 
 
 def now_timeframe():
