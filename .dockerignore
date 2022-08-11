@@ -1,0 +1,12 @@
+./venv
+
+./.git
+./.gitignore
+
+./.vscode
+
+./Dockerfile
+./docker-compose.yml
+./.dockerignore
+
+./url_shortener/db.sqlite3
