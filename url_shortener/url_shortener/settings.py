@@ -80,10 +80,10 @@ WSGI_APPLICATION = "url_shortener.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "test_db",
-        "USER": "test_user",
-        "PASSWORD": "1234",
-        "HOST": "172.17.0.2",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "psql_db",
         "PORT": "5432",
     }
 }
