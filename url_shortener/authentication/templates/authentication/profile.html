@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} profile</title>
+</head>
+<body>
+    
+    <div>
+        <a href="{% url 'authentication:logout' %}">logout</a> - 
+        <a href="#">delete account</a>
+    </div>
+    
+    <hr>
+    
+    <a href="{% url 'shortener:create' %}">new url</a>
+    <ul>
+        {% for url in urls %}
+        <li>{{ url }} |
+            <a href="{% url 'shortener:url_detail' url.key %}">detail</a> | 
+            <a href="{% url 'shortener:url_update' url.key %}">update</a> | 
+            <a href="{% url 'shortener:url_delete' url.key %}">delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
