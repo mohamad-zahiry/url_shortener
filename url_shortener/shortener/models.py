@@ -24,13 +24,5 @@ class ShortenedUrl(models.Model):
     def __str__(self):
         return self.key
 
-    def save(self, *args, **kwargs):
-        key = short_url()
-        while ShortenedUrl.objects.filter(key=key).exists():
-            key = short_url()
-        self.key = key
-
-        super().save(*args, **kwargs)
-
     def get_absolute_url(self):
         return reverse("shortener:url_detail", kwargs={"key": self.key})

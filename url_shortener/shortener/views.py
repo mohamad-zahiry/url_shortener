@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from shortener.models import ShortenedUrl
 from shortener.forms import ShortenedUrlForm
 from shortener.viewmixins import keyAsSlugMixin
+from shortener.utils.shortener import short_url
 
 
 class ShortenedUrlCreateView(LoginRequiredMixin, CreateView):
@@ -14,6 +15,11 @@ class ShortenedUrlCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+
+        form.instance.key = short_url()
+        while ShortenedUrl.objects.filter(key=form.instance.key).exists():
+            form.instance.key = short_url()
+
         return super().form_valid(form)
 
 
