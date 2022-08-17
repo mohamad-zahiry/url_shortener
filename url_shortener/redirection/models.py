@@ -6,17 +6,18 @@ from redirection.utils.country import country_name_by_ip
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    name = models.CharField(max_length=50, unique=True, default="Unknown")
 
     class Meta:
         verbose_name_plural = "Countries"
 
     def __str__(self):
-        return self.name if self.name else "No Country"
+        return self.name
 
     @classmethod
     def from_ip(cls, ip):
-        obj, _ = cls.objects.get_or_create(name=country_name_by_ip(ip))
+        name = country_name_by_ip(ip) or "Unknown"
+        obj, _ = cls.objects.get_or_create(name=name)
         return obj
 
 
@@ -50,7 +51,6 @@ class UrlData(models.Model):
     country = models.ForeignKey(
         to=Country,
         to_field="name",
-        # default="",
         on_delete=models.DO_NOTHING,
         editable=False,
     )
