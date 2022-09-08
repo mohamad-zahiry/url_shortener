@@ -1,5 +1,9 @@
 # URL Shortener
 
+![python](https://img.shields.io/badge/python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white) ![django](https://img.shields.io/badge/django-4.1-brightgreen?style=for-the-badge&logo=django&logoColor=white)
+
+![postgres](https://img.shields.io/badge/-PostgreSQL-blueviolet?logo=postgresql&logoColor=white) ![docker](https://img.shields.io/badge/-Docekr-blue?logo=docker&logoColor=white)
+
 A short url service
 
 ---
